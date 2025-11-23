@@ -19,7 +19,7 @@ except Exception:
 # ---------------------
 
 def load_model_from_local(path):
-    if not os.path.exists(path):
+    if not os.path.exists(1kJWpQQlF-2Rtwj2xRmVtbDw-83cyjD3q):
         raise FileNotFoundError(f"Model not found at {path}")
     model = tf.keras.models.load_model(path)
     return model
