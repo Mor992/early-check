@@ -1,4 +1,4 @@
-
+streamlit_app_code = """
 import streamlit as st
 import numpy as np
 from PIL import Image
@@ -137,8 +137,7 @@ if model is not None:
     with st.expander('Show model summary'):
         buf = io.StringIO()
         try:
-            model.summary(print_fn=lambda x: buf.write(x + "
-"))
+            model.summary(print_fn=lambda x: buf.write(x + "\\n"))
             st.text(buf.getvalue())
         except Exception as e:
             st.text('Unable to show model summary: ' + str(e))
@@ -155,7 +154,7 @@ if uploaded is not None:
 
 # Class names input
 class_names_input = st.text_input(
-    'Comma-separated class names for the model's output (e.g., Actinic Keratoses,Basal Cell Carcinoma,Melanoma,Not Cancer)',
+    'Comma-separated class names for the model\'s output (e.g., Actinic Keratoses,Basal Cell Carcinoma,Melanoma,Not Cancer)',
     value=DEFAULT_CLASS_NAMES # Set default class names
 )
 class_names = [c.strip() for c in class_names_input.split(',') if c.strip()]
@@ -224,4 +223,4 @@ st.markdown('''
 -   **Layer Name:** If Grad-CAM fails, check the "Show model summary" section to find the correct name for the last convolutional layer (e.g., `conv5_block3_out` for many ResNet50 variants).
 -   **Class Names:** Provide accurate, comma-separated class names in the correct order corresponding to your model's output labels for meaningful predictions.
 -   **Preprocessing:** The app attempts to use `tf.keras.applications.resnet50.preprocess_input` if available, otherwise scales pixel values to `[0, 1]`. Ensure this matches your model's training preprocessing.
-''')
+''')"""
