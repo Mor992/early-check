@@ -5,11 +5,12 @@ import gdown
 import os
 from PIL import Image
 import matplotlib.pyplot as plt
+import cv2
 
 # =========================================================
 # CONFIG
 # =========================================================
-MODEL_DRIVE_ID = "1kJWpQQlF-2Rtwj2xRmVtbDw-83cyjD3q"   # YOUR .keras MODEL
+MODEL_DRIVE_ID = "1kJWpQQlF-2Rtwj2xRmVtbDw-83cyjD3q"
 MODEL_FILENAME = "final_resnet_model.keras"
 INPUT_SIZE = (224, 224)
 
@@ -41,30 +42,31 @@ def load_model():
 
 
 # =========================================================
-# GRAD‑CAM++
+# GRAD‑CAM++ UTILS
 # =========================================================
-def compute_gradcam_plus_plus(model, image, layer_name="conv5_block3_out"):
-    try:
-        conv_layer = model.get_layer(layer_name)
-    except:
-        # fallback last conv
-        def find_last_conv_layer(model):
-    # Search for any Conv2D layer from the end
-            for layer in reversed(model.layers):
-                if isinstance(layer, tf.keras.layers.Conv2D):
-                    return layer.name
-    
-    # If model uses ResNet blocks, try known names
-            for name in ["conv5_block3_out", "post_relu"]:
-                try:
-                    model.get_layer(name)
-                    return name
-                except:
-                    pass
+def find_last_conv_layer(model):
+    """Return the last Conv2D layer name."""
+    for layer in reversed(model.layers):
+        if isinstance(layer, tf.keras.layers.Conv2D):
+            return layer.name
 
-            raise ValueError("No convolution layer found in model.")
+    # fallback to known ResNet layers
+    for name in ["conv5_block3_out", "post_relu"]:
+        try:
+            model.get_layer(name)
+            return name
+        except:
+            pass
 
-last_conv_layer_name = find_last_conv_layer(model)
+    raise ValueError("❌ No convolution layer found in model.")
+
+
+def compute_gradcam_plus_plus(model, image, layer_name=None):
+    """Compute Grad‑CAM++ on the last conv layer."""
+    if layer_name is None:
+        layer_name = find_last_conv_layer(model)
+
+    conv_layer = model.get_layer(layer_name)
 
     grad_model = tf.keras.models.Model(
         inputs=model.input,
@@ -79,7 +81,7 @@ last_conv_layer_name = find_last_conv_layer(model)
     if grads is None:
         return None
 
-    # GradCAM++
+    # Grad‑CAM++
     grads2 = grads ** 2
     grads3 = grads ** 3
 
@@ -89,12 +91,11 @@ last_conv_layer_name = find_last_conv_layer(model)
 
     alpha = alpha_num / alpha_denom
     weights = tf.reduce_sum(alpha * tf.nn.relu(grads), axis=(1, 2))
+
     cam = tf.reduce_sum(weights[..., None, None, :] * conv_out, axis=-1)
+    cam = tf.nn.relu(cam)[0].numpy()
 
-    cam = tf.nn.relu(cam)
-    cam = cam[0].numpy()
-
-    if cam.max() != 0:
+    if cam.max() > 0:
         cam /= cam.max()
 
     return cam
@@ -108,7 +109,7 @@ def overlay_heatmap(image, heatmap):
 
 
 # =========================================================
-# PREDICT
+# PREDICT FUNCTION
 # =========================================================
 def predict(model, pil_img):
     img = pil_img.resize(INPUT_SIZE)
@@ -143,16 +144,14 @@ if uploaded:
         cls, prob, overlay = predict(model, img)
 
         st.subheader("Prediction Result")
-
         if cls == 1:
-            st.error(f"⚠️ **Cancer Detected** — Confidence: {prob*100:.2f}%")
+            st.error(f"⚠️ Cancer Detected — Confidence: {prob*100:.2f}%")
         else:
-            st.success(f"✓ **No Cancer Detected** — Confidence: {(1-prob)*100:.2f}%")
+            st.success(f"✓ No Cancer Detected — Confidence: {(1-prob)*100:.2f}%")
 
         if overlay is not None:
-            st.subheader("Grad‑CAM++")
+            st.subheader("Grad‑CAM++ Heatmap")
             st.image(overlay, caption="Heatmap Overlay")
-
 
 st.markdown("---")
 st.caption("For educational purposes only. Not medical advice.")
