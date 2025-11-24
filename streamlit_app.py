@@ -45,26 +45,27 @@ def load_model():
 # GRAD‑CAM++ UTILS
 # =========================================================
 def find_last_conv_layer(model):
-    """Return the last Conv2D layer name."""
+    # Scan for Conv2D layers
     for layer in reversed(model.layers):
         if isinstance(layer, tf.keras.layers.Conv2D):
             return layer.name
 
-    # fallback to known ResNet layers
-    for name in ["conv5_block3_out", "post_relu"]:
+    # If model includes ResNet blocks but keras hides Conv2D
+    for name in ["conv5_block3_out", "conv5_block1_out", "post_relu"]:
         try:
             model.get_layer(name)
             return name
         except:
             pass
 
-    raise ValueError("❌ No convolution layer found in model.")
+    return None
 
 
-def compute_gradcam_plus_plus(model, image, layer_name=None):
-    """Compute Grad‑CAM++ on the last conv layer."""
+
+def compute_gradcam_plus_plus(model, image):
+    layer_name = find_last_conv_layer(model)
     if layer_name is None:
-        layer_name = find_last_conv_layer(model)
+        raise ValueError("❌ Model has no convolution layers — cannot compute Grad‑CAM++")
 
     conv_layer = model.get_layer(layer_name)
 
@@ -81,24 +82,22 @@ def compute_gradcam_plus_plus(model, image, layer_name=None):
     if grads is None:
         return None
 
-    # Grad‑CAM++
     grads2 = grads ** 2
     grads3 = grads ** 3
 
     alpha_num = grads2
     alpha_denom = grads2 * 2 + tf.reduce_sum(conv_out * grads3, axis=(1, 2), keepdims=True)
     alpha_denom = tf.where(alpha_denom == 0, tf.ones_like(alpha_denom), alpha_denom)
-
     alpha = alpha_num / alpha_denom
+
     weights = tf.reduce_sum(alpha * tf.nn.relu(grads), axis=(1, 2))
+    cam = tf.reduce_sum(weights[..., None, None, :] * conv_out, axis=-1)[0]
+    cam = tf.nn.relu(cam).numpy()
 
-    cam = tf.reduce_sum(weights[..., None, None, :] * conv_out, axis=-1)
-    cam = tf.nn.relu(cam)[0].numpy()
-
-    if cam.max() > 0:
+    if cam.max() != 0:
         cam /= cam.max()
-
     return cam
+
 
 
 def overlay_heatmap(image, heatmap):
