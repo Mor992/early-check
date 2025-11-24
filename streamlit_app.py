@@ -48,8 +48,23 @@ def compute_gradcam_plus_plus(model, image, layer_name="conv5_block3_out"):
         conv_layer = model.get_layer(layer_name)
     except:
         # fallback last conv
-        conv_layer = next(l for l in model.layers[::-1] if "conv" in l.name)
+        def find_last_conv_layer(model):
+    # Search for any Conv2D layer from the end
+    for layer in reversed(model.layers):
+        if isinstance(layer, tf.keras.layers.Conv2D):
+            return layer.name
+    
+    # If model uses ResNet blocks, try known names
+    for name in ["conv5_block3_out", "post_relu"]:
+        try:
+            model.get_layer(name)
+            return name
+        except:
+            pass
 
+    raise ValueError("No convolution layer found in model.")
+
+last_conv_layer_name = find_last_conv_layer(model)
     grad_model = tf.keras.models.Model(
         inputs=model.input,
         outputs=[conv_layer.output, model.output]
