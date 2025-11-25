@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 # -----------------------------------------------------
 st.set_page_config(page_title="Simple Skin Cancer App", page_icon="🔬")
 
-MODEL_ID = "1SvHgAenMvRpTZolC5GcagozNR_MprQ6-"   # your .keras file
-MODEL_FILE = "resnet_model.keras"
+MODEL_ID = "1CpmFwks2GdR9asokDAs7oDQs4GoeakSF"   # your .keras file
+MODEL_FILE = "1resnet_model.h5
 IMG_SIZE = (224, 224)
 
 # -----------------------------------------------------
