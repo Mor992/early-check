@@ -56,6 +56,14 @@ if uploaded:
 
         st.subheader("Simple Report")
         st.write(f"The model predicts **{class_names[idx]}** with **{confidence:.2%}** confidence.")
+
+        st.subheader("Clinical Guidance (Non-Diagnostic)")
+        st.write("This tool is for research/testing only and not a medical diagnosis.")
+        st.write("Always consult a qualified dermatologist for medical evaluation.")
+
+        st.subheader("Model Info")
+        st.write(f"Input size: {target_size}")
+        st.write(f"Model file: {MODEL_PATH}")
     else:
         p = float(pred[0])
         st.write(f"Probability: {p:.4f}")
