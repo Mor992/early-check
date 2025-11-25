@@ -40,7 +40,7 @@ if uploaded:
     arr = np.expand_dims(arr, 0)
 
     # Predict
-    class_names = ["Melanoma","Melanocytic Nevus","Basal Cell Carcinoma","Actinic Keratosis"]  # EDIT your class names here
+    class_names = ['Melanoma → Cancer (malignant)','Melanocytic Nevus → Usually benign (moles, not cancer)','Basal Cell Carcinoma (BCC) → Cancer (skin cancer, usually slow-growing)','Actinic Keratosis (AK) → Pre-cancerous (can turn into squamous cell carcinoma if untreated']  # EDIT your class names here
     pred = model.predict(arr)[0]
 
     st.subheader("Prediction Result")
