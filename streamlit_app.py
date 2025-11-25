@@ -49,8 +49,7 @@ if uploaded:
         idx = int(np.argmax(pred))
         confidence = float(pred[idx])
         st.write(f"Top class: {class_names[idx]} ({confidence:.4f})")
-        st.write("
-**Full probabilities:**")
+        st.write("**Full probabilities:**")**")
         for i, p in enumerate(pred):
             st.write(f"{class_names[i]}: {p:.4f}")
 
