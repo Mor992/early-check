@@ -40,7 +40,7 @@ if uploaded:
     arr = np.expand_dims(arr, 0)
 
     # Predict
-    class_names = ["melanoma", "nevus", "bcc", "ak"]  # EDIT your class names here
+    class_names = ["Melanoma", "Nevus", "Basal Cell Carcinoma", "Actinic Keratosis"]  # EDIT your class names here
     pred = model.predict(arr)[0]
 
     st.subheader("Prediction Result")
@@ -49,7 +49,8 @@ if uploaded:
         idx = int(np.argmax(pred))
         confidence = float(pred[idx])
         st.write(f"Top class: {class_names[idx]} ({confidence:.4f})")
-        st.write("\n**Full probabilities:**")
+        st.write("
+**Full probabilities:**")
         for i, p in enumerate(pred):
             st.write(f"{class_names[i]}: {p:.4f}")
 
