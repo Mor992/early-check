@@ -9,7 +9,7 @@ import os
 # -----------------------------
 MODEL_PATH = "1resnet_model.h5"  # make sure your model file is in same folder
 
-st.title("Skin Lesion Classifier — Simple App")
+st.title("Skin Lesion Classifier")
 
 # Load model
 @st.cache_resource
@@ -40,7 +40,12 @@ if uploaded:
     arr = np.expand_dims(arr, 0)
 
     # Predict
-    class_names = ["Melanoma", "Nevus", "Basal Cell Carcinoma", "Actinic Keratosis"]  # EDIT your class names here
+   class_names = [
+"Melanoma",
+"Melanocytic Nevus",
+"Basal Cell Carcinoma",
+"Actinic Keratosis"
+]  # EDIT your class names here
     pred = model.predict(arr)[0]
 
     st.subheader("Prediction Result")
@@ -49,20 +54,13 @@ if uploaded:
         idx = int(np.argmax(pred))
         confidence = float(pred[idx])
         st.write(f"Top class: {class_names[idx]} ({confidence:.4f})")
-        st.write("**Full probabilities:**"))
+        st.write("
+**Full probabilities:**")
         for i, p in enumerate(pred):
             st.write(f"{class_names[i]}: {p:.4f}")
 
         st.subheader("Simple Report")
         st.write(f"The model predicts **{class_names[idx]}** with **{confidence:.2%}** confidence.")
-
-        st.subheader("Clinical Guidance (Non-Diagnostic)")
-        st.write("This tool is for research/testing only and not a medical diagnosis.")
-        st.write("Always consult a qualified dermatologist for medical evaluation.")
-
-        st.subheader("Model Info")
-        st.write(f"Input size: {target_size}")
-        st.write(f"Model file: {MODEL_PATH}")
     else:
         p = float(pred[0])
         st.write(f"Probability: {p:.4f}")
