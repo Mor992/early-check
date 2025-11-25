@@ -7,7 +7,7 @@ import os
 # -----------------------------
 # CONFIG
 # -----------------------------
-MODEL_PATH = "1resnet_model.h5"  # make sure your model file is in same folder
+MODEL_PATH = "resnet_skin_cancer_2class.h5"  # make sure your model file is in same folder
 
 st.title("Skin Lesion Classifier")
 
