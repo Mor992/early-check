@@ -40,14 +40,21 @@ if uploaded:
     arr = np.expand_dims(arr, 0)
 
     # Predict
+    class_names = ["melanoma", "nevus", "bcc", "ak"]  # EDIT your class names here
     pred = model.predict(arr)[0]
 
     st.subheader("Prediction Result")
 
     if pred.shape[0] > 1:
-        # Multiclass
+        idx = int(np.argmax(pred))
+        confidence = float(pred[idx])
+        st.write(f"Top class: {class_names[idx]} ({confidence:.4f})")
+        st.write("\n**Full probabilities:**")
         for i, p in enumerate(pred):
-            st.write(f"Class {i}: {p:.4f}")
+            st.write(f"{class_names[i]}: {p:.4f}")
+
+        st.subheader("Simple Report")
+        st.write(f"The model predicts **{class_names[idx]}** with **{confidence:.2%}** confidence.")
     else:
         p = float(pred[0])
         st.write(f"Probability: {p:.4f}")
