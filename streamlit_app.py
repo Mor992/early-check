@@ -40,12 +40,7 @@ if uploaded:
     arr = np.expand_dims(arr, 0)
 
     # Predict
-   class_names = [
-"Melanoma",
-"Melanocytic Nevus",
-"Basal Cell Carcinoma",
-"Actinic Keratosis"
-]  # EDIT your class names here
+    class_names = ["Melanoma","Melanocytic Nevus","Basal Cell Carcinoma","Actinic Keratosis"]  # EDIT your class names here
     pred = model.predict(arr)[0]
 
     st.subheader("Prediction Result")
