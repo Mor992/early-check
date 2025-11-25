@@ -10,8 +10,8 @@ import cv2
 # =========================================================
 # CONFIG
 # =========================================================
-MODEL_DRIVE_ID = "1gKk4sHFVT9Umc8zZ9UU3fjrcKlP_6mYF"
-MODEL_FILENAME = "best_resnet_model.keras"
+MODEL_DRIVE_ID = "1MA6mvotqb_RkswHivYjkZXbba0HVWpYN"
+MODEL_FILENAME = "resnet_model.h5"
 INPUT_SIZE = (224, 224)
 
 st.set_page_config(page_title="Skin Cancer Detection", page_icon="🔬", layout="wide")
