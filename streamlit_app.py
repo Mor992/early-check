@@ -10,7 +10,7 @@ import cv2
 # Optional: allow downloading the model from Google Drive using gdown
 # If you prefer to place the model file manually, put it in the app folder and set MODEL_PATH accordingly.
 GDRIVE_FILE_ID = "1MA6mvotqb_RkswHivYjkZXbba0HVWpYN"
-DEFAULT_MODEL_FILENAME = "model.h5"  # change if your model is a SavedModel folder
+DEFAULT_MODEL_FILENAME = "resnet_model.keras"  # change if your model is a SavedModel folder
 
 st.set_page_config(page_title="Skin / Lesion Classifier", layout="wide")
 
