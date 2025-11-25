@@ -8,8 +8,8 @@ import gdown
 # -----------------------------
 # CONFIG
 # -----------------------------
-MODEL_DRIVE_ID = "19hZJjhFR7kNUS7ZDbCMghnf3hwr4w37c"
-MODEL_PATH = "resnet_skin_cancer_2class.h5"  # model filename
+MODEL_DRIVE_ID = "1XlZArIYbtkG3_NRyP2hsRBViY0C5T67f"
+MODEL_PATH = "model.weights.h5"  # model filename
 
 st.title("Skin Lesion Classifier")
 
